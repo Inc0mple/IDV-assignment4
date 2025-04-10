@@ -1,75 +1,32 @@
+<!-- assignment4/index.html --> 
 <!DOCTYPE html>
-<!-- saved from url=(0068)https://chi-loong.github.io/IDV/assignments/assignment4-starter.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <style></style>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singapore Population Map</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body data-new-gr-c-s-check-loaded="14.1229.0" data-gr-ext-installed="">
-  <object type="image/svg+xml" data="image.svg">
-    Fallback text or image
-  </object>
-<script src="./assignment4-starter_2_files/d3.v7.min.js.download"></script>
-
-<script>
-
-let width = 1000, height = 600;
-
-let svg = d3.select("svg")
-    .attr("viewBox", "0 0 " + width + " " + height)
-
-// Load external data and boot
-Promise.all([d3.json("sgmap.json"), d3.csv("population2024.csv")]).then(data => {
-
-let mapData = data[0].features;
-let popData = data[1];
-
-// Merge pop data with map data
-mapData.forEach(d => {
-  let subzone = popData.find(e => e.Subzone.toUpperCase() == d.properties.Name);
-  d.popdata = (subzone != undefined) ? parseInt(subzone.Population) : 0;
-})
-
-console.log(mapData);
-
-// Map and projection
-let projection = d3.geoMercator()
-    .center([103.851959, 1.290270])
-    .fitExtent([[20, 20], [980, 580]], data[0]);
-
-let geopath = d3.geoPath().projection(projection);
-
-svg.append("g")
-    .attr("id", "districts")
-    .selectAll("path")
-    .data(mapData)
-    .enter()
-    .append("path")
-    .attr("d", geopath)
-    .attr("stroke", "black")
-    .attr("fill", "grey");
-})
-
-</script>
-
-
-</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
-      div.grammarly-desktop-integration {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select:none;
-        user-select:none;
-      }
-
-      div.grammarly-desktop-integration:before {
-        content: attr(data-content);
-      }
-    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
+<body>
+  <div class="container">
+    <h1>Singapore Subzone Population Distribution (2024)</h1>
+    <div class="map-container">
+      <svg id="map" width="1000" height="600"></svg>
+      <div id="tooltip" class="tooltip"></div>
+    </div>
+    <div class="legend-container">
+      <h3>Population Density by Subzone</h3>
+      <div id="legend"></div>
+      <p class="legend-note">Click on a subzone to focus. Use the Reset button to return to the full view.</p>
+    </div>
+    <div class="info-container">
+      <h3>About this Visualization</h3>
+      <p>This choropleth map shows the population distribution across Singapore's subzones based on 2024 data. 
+      Darker colors indicate higher population. Hover over a subzone to see detailed information.</p>
+    </div>
+  </div>
+  
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
