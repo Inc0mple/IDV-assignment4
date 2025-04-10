@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://chi-loong.github.io/IDV/assignments/assignment4-starter.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <style></style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1229.0" data-gr-ext-installed="">
+  <object type="image/svg+xml" data="image.svg">
+    Fallback text or image
+  </object>
+<script src="./assignment4-starter_2_files/d3.v7.min.js.download"></script>
+
+<script>
+
+let width = 1000, height = 600;
+
+let svg = d3.select("svg")
+    .attr("viewBox", "0 0 " + width + " " + height)
+
+// Load external data and boot
+Promise.all([d3.json("sgmap.json"), d3.csv("population2024.csv")]).then(data => {
+
+let mapData = data[0].features;
+let popData = data[1];
+
+// Merge pop data with map data
+mapData.forEach(d => {
+  let subzone = popData.find(e => e.Subzone.toUpperCase() == d.properties.Name);
+  d.popdata = (subzone != undefined) ? parseInt(subzone.Population) : 0;
+})
+
+console.log(mapData);
+
+// Map and projection
+let projection = d3.geoMercator()
+    .center([103.851959, 1.290270])
+    .fitExtent([[20, 20], [980, 580]], data[0]);
+
+let geopath = d3.geoPath().projection(projection);
+
+svg.append("g")
+    .attr("id", "districts")
+    .selectAll("path")
+    .data(mapData)
+    .enter()
+    .append("path")
+    .attr("d", geopath)
+    .attr("stroke", "black")
+    .attr("fill", "grey");
+})
+
+</script>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
